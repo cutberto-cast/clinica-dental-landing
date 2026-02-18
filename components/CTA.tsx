@@ -1,19 +1,45 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useModal } from "./ModalContext";
 
 export default function CTA() {
     const { openModal } = useModal();
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (video) {
+            video.muted = true;
+            
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                    console.log("Autoplay prevenido por el navegador:", error);
+                });
+            }
+        }
+    }, []);
 
     return (
         <section className="relative py-24 overflow-hidden flex items-center justify-center min-h-[500px]">
 
-            <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
+            <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover z-0"
+            >
                 <source src="/videos/dental-bg.mp4" type="video/mp4" />
+                <div className="absolute inset-0 bg-blue-900" />
             </video>
 
             <div className="absolute inset-0 bg-blue-900/50 mix-blend-multiply z-10"></div>
+            
             <div className="relative z-20 max-w-4xl mx-auto px-4 text-center">
 
                 <motion.div
@@ -33,25 +59,26 @@ export default function CTA() {
                     <button
                         onClick={openModal}
                         className="
-                                    group
-                                    relative
-                                    px-10 py-5 rounded-2xl
-                                    font-bold text-xl text-white
-                                    
-                                    /* Efecto Glassmorphism */
-                                    bg-white/10 
-                                    backdrop-blur-md 
-                                    border border-white/30
-                                    shadow-lg shadow-black/20
-                                    
-                                    /* Hover Effects */
-                                    hover:bg-white/20 
-                                    hover:scale-105 hover:border-white/60
-                                    hover:shadow-blue-500/30
-                                    active:scale-95
-                                    
-                                    transition-all duration-300
-                                    flex items-center gap-3 mx-auto">
+                            group
+                            relative
+                            px-10 py-5 rounded-2xl
+                            font-bold text-xl text-white
+                            
+                            /* Efecto Glassmorphism */
+                            bg-white/10 
+                            backdrop-blur-md 
+                            border border-white/30
+                            shadow-lg shadow-black/20
+                            
+                            /* Hover Effects */
+                            hover:bg-white/20 
+                            hover:scale-105 hover:border-white/60
+                            hover:shadow-blue-500/30
+                            active:scale-95
+                            
+                            transition-all duration-300
+                            flex items-center gap-3 mx-auto"
+                    >
                         <span>Reservar ahora</span>
                         <span className="material-symbols-outlined group-hover:rotate-12 transition-transform">
                             calendar_month
