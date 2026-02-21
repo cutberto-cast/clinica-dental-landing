@@ -45,7 +45,7 @@ export default function BookingModal() {
         e.preventDefault();
         if (!isPhoneValid) return;
 
-        const dentistPhone = "2722815138";
+        const dentistPhone = "2722974528";
 
         const fechaTexto = formData.date
             ? formData.date
