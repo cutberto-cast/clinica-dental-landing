@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, Variants, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useModal } from "./ModalContext";
 
 const servicesData = [
@@ -55,15 +55,157 @@ const servicesData = [
     },
 ];
 
+const SMILE_AFTER = "despues.png";
+const SMILE_BEFORE = "antes.png";
+
 const container: Variants = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+};
+const item: Variants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } },
 };
 
-const item: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } }
-};
+function BeforeAfterSlider() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState(50);
+    const [isDragging, setIsDragging] = useState(false);
+    const [hasAnimated, setHasAnimated] = useState(false);
+
+    useEffect(() => {
+        if (hasAnimated) return;
+        const delay = setTimeout(() => {
+            setHasAnimated(true);
+            let start = 30;
+            let direction = 1;
+            let current = start;
+            setPosition(start);
+
+            const interval = setInterval(() => {
+                current += direction * 1.5;
+                if (current >= 70) { direction = -1; }
+                if (current <= 50 && direction === -1) {
+                    clearInterval(interval);
+                    setPosition(50);
+                    return;
+                }
+                setPosition(current);
+            }, 16);
+        }, 600);
+        return () => clearTimeout(delay);
+    }, [hasAnimated]);
+
+    const updatePosition = useCallback((clientX: number) => {
+        const el = containerRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const raw = ((clientX - rect.left) / rect.width) * 100;
+        setPosition(Math.min(100, Math.max(0, raw)));
+    }, []);
+
+    const onMouseDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    useEffect(() => {
+        if (!isDragging) return;
+        const onMove = (e: MouseEvent) => updatePosition(e.clientX);
+        const onUp = () => setIsDragging(false);
+        
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onUp);
+        
+        return () => {
+            window.removeEventListener("mousemove", onMove);
+            window.removeEventListener("mouseup", onUp);
+        };
+    }, [isDragging, updatePosition]);
+
+    const onTouchStart = () => setIsDragging(true);
+    const onTouchMove = (e: React.TouchEvent) => updatePosition(e.touches[0].clientX);
+    const onTouchEnd = () => setIsDragging(false);
+
+    return (
+        <div className="flex flex-col w-full max-w-md lg:w-[420px] ml-auto shrink-0">
+            <div
+                ref={containerRef}
+                className="relative rounded-3xl overflow-hidden shadow-2xl w-full aspect-[4/5] bg-slate-100"
+                style={{ userSelect: "none", touchAction: "none" }}
+            >
+                <img
+                    src={SMILE_AFTER}
+                    alt="Sonrisa después"
+                    draggable={false}
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+
+                <div className="absolute top-4 right-4 z-10 bg-black/30 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm pointer-events-none">
+                    Después
+                </div>
+
+                <div
+                    className="absolute inset-0 overflow-hidden"
+                    style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+                >
+                    <img
+                        src={SMILE_BEFORE}
+                        alt="Sonrisa antes"
+                        draggable={false}
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    
+                    <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{ background: "linear-gradient(to right, rgba(0,0,0,0.2) 0%, transparent 40%)" }}
+                    />
+
+                    <div className="absolute top-4 left-4 z-10 bg-black/50 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm pointer-events-none">
+                        Antes
+                    </div>
+                </div>
+
+                <div
+                    className="absolute top-0 bottom-0 w-[1.5px] bg-white/80 shadow-[0_0_8px_rgba(255,255,255,0.5)] pointer-events-none"
+                    style={{ left: `${position}%` }}
+                />
+
+                <div
+                    className="absolute z-20"
+                    style={{ 
+                        left: `${position}%`, 
+                        top: "82%",
+                        transform: "translate(-50%, -50%)",
+                        cursor: isDragging ? "grabbing" : "grab"
+                    }}
+                    onMouseDown={onMouseDown}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                >
+                    <motion.div 
+                        animate={{ scale: isDragging ? 1.08 : 1 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.2)] flex items-center justify-center border border-white/40 hover:bg-white/30 transition-colors"
+                    >
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-white drop-shadow-md">
+                            <path d="M9 6l-4 6 4 6M15 6l4 6-4 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </motion.div>
+                </div>
+
+            </div>
+
+            <p className="text-center text-slate-400 dark:text-slate-500 text-xs mt-4 flex items-center justify-center gap-1.5 font-medium">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 6l-4 6 4 6M15 6l4 6-4 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.8"/>
+                </svg>
+                Arrastra para comparar
+            </p>
+        </div>
+    );
+}
 
 export default function Services() {
     const [selectedService, setSelectedService] = useState<typeof servicesData[0] | null>(null);
@@ -72,69 +214,83 @@ export default function Services() {
     const handleWhatsAppInfo = (serviceTitle: string) => {
         const phone = "5215512345678";
         const message = `Hola, me interesa el tratamiento de *${serviceTitle}*. ¿Podrían darme más información sobre precios o el proceso?`;
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
     };
 
     const handleBookAppointment = () => {
         setSelectedService(null);
-        setTimeout(() => {
-            openModal();
-        }, 150);
+        setTimeout(() => openModal(), 150);
     };
 
     return (
-        <section id="servicios" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="servicios" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-900/50 relative min-h-screen flex items-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="text-center mb-10 md:mb-16"
+                    className="text-center mb-12"
                 >
                     <h3 className="text-primary font-bold text-xs md:text-sm uppercase tracking-widest mb-2">Tratamientos</h3>
                     <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">Lo que hacemos por ti</h2>
-                    <div className="w-16 md:w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+                    <div className="w-16 md:w-20 h-1 bg-primary mx-auto mt-4 rounded-full" />
                 </motion.div>
 
-                <motion.div
-                    variants={container}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true, margin: "-50px" }}
-                    className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8"
-                >
-                    {servicesData.map((service, index) => (
-                        <motion.div
-                            variants={item}
-                            key={index}
-                            onClick={() => setSelectedService(service)}
-                            className="relative bg-white dark:bg-background-dark p-4 md:p-8 rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 dark:border-slate-800 group hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden"
-                        >
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 xl:gap-16 items-start">
 
-                            <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-3 md:mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                <span className="material-symbols-outlined text-xl md:text-3xl">{service.icon}</span>
-                            </div>
-
-                            <h4 className="text-sm md:text-xl font-bold mb-2 text-slate-900 dark:text-white pr-4">
-                                {service.title}
-                            </h4>
-                            <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 mb-3 md:mb-4 line-clamp-3 flex-grow">
-                                {service.cardDesc}
-                            </p>
-
-                            <span className="text-primary font-bold text-xs md:text-sm flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
-                                Ver detalles <span className="material-symbols-outlined text-[10px] md:text-sm">arrow_forward</span>
-                            </span>
-                        </motion.div>
-                    ))}
-                </motion.div>
+                    <motion.div
+                        variants={container}
+                        initial="hidden"
+                        whileInView="show"
+                        viewport={{ once: true, margin: "-50px" }}
+                        className="grid grid-cols-2 gap-4 lg:gap-5 content-start w-full"
+                    >
+                        {servicesData.map((service, index) => (
+                            <motion.div
+                                variants={item}
+                                key={index}
+                                onClick={() => setSelectedService(service)}
+                                className="relative bg-white dark:bg-background-dark p-5 rounded-2xl shadow-sm hover:shadow-xl border border-slate-100 dark:border-slate-800 group hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300 shrink-0">
+                                        <span className="material-symbols-outlined text-[20px]">{service.icon}</span>
+                                    </div>
+                                    <h4 className="text-[14px] md:text-[15px] font-bold text-slate-900 dark:text-white leading-tight flex-1">
+                                        {service.title}
+                                    </h4>
+                                </div>
+                                <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed flex-1">
+                                    {service.cardDesc}
+                                </p>
+                                
+                                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-in-out mt-auto">
+                                    <div className="overflow-hidden">
+                                        <div className="pt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100 flex items-center gap-1.5 text-primary text-xs font-bold uppercase tracking-wide">
+                                            Ver más
+                                            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="lg:sticky lg:top-32"
+                    >
+                        <BeforeAfterSlider />
+                    </motion.div>
+                </div>
             </div>
 
             <AnimatePresence>
                 {selectedService && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 sm:px-6">
-
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -142,7 +298,6 @@ export default function Services() {
                             onClick={() => setSelectedService(null)}
                             className="absolute inset-0 bg-slate-900/70 backdrop-blur-md"
                         />
-
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -158,7 +313,11 @@ export default function Services() {
                             </button>
 
                             <div className="w-full h-40 sm:h-48 relative shrink-0">
-                                <img src={selectedService.image} alt={selectedService.title} className="w-full h-full object-cover" />
+                                <img 
+                                    src={selectedService.image} 
+                                    alt={selectedService.title} 
+                                    className="w-full h-full object-cover" 
+                                />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent flex items-end p-6">
                                     <h2 className="text-2xl sm:text-3xl font-black text-white leading-tight">
                                         {selectedService.title}
@@ -167,13 +326,10 @@ export default function Services() {
                             </div>
 
                             <div className="p-6 sm:p-8 overflow-y-auto bg-white dark:bg-slate-900">
-
                                 <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed mb-8">
                                     {selectedService.modalDesc}
                                 </p>
-
                                 <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">¿Por qué elegirnos?</h3>
-
                                 <ul className="space-y-4 mb-2">
                                     {selectedService.benefits.map((benefit, idx) => (
                                         <li key={idx} className="flex items-start gap-3">
@@ -186,7 +342,6 @@ export default function Services() {
 
                             <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shrink-0">
                                 <div className="flex flex-col sm:flex-row gap-3">
-
                                     <button
                                         onClick={handleBookAppointment}
                                         className="w-full bg-primary hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold text-[15px] shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2 group order-1 sm:order-2"
@@ -194,7 +349,6 @@ export default function Services() {
                                         Agendar Cita
                                         <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">event_available</span>
                                     </button>
-
                                     <button
                                         onClick={() => handleWhatsAppInfo(selectedService.title)}
                                         className="w-full bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-white py-3.5 rounded-xl font-bold text-[15px] transition-all flex items-center justify-center gap-2 order-2 sm:order-1 border border-slate-200 dark:border-slate-700 shadow-sm"
@@ -206,7 +360,6 @@ export default function Services() {
                                     </button>
                                 </div>
                             </div>
-
                         </motion.div>
                     </div>
                 )}
