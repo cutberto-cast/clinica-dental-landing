@@ -38,3 +38,186 @@ html {
   background-size: 300% 300%;
   animation: gradient-flow 8s ease infinite;
 }
+
+/* Hero Button Uiverse Effect V2 */
+.hero-uiverse-btn-v2 {
+  display: inline-block;
+  font-weight: bold;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 50px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-uiverse-btn-v2:before,
+.hero-uiverse-btn-v2:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  opacity: 0.3;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.hero-uiverse-btn-v2:before {
+  left: -100%;
+  /* Mas morado el rosa: combinacion 0, 136, 255 (azul) con purpura (#9333ea / 147, 51, 234) */
+  background: linear-gradient(90deg, rgba(0, 136, 255, 0.8), #8a2be2, rgba(0, 136, 255, 0.8));
+  z-index: -1;
+}
+
+.hero-uiverse-btn-v2:hover:before {
+  left: 0;
+}
+
+.hero-uiverse-btn-v2:after {
+  right: -100%;
+  background: linear-gradient(270deg, rgba(0, 136, 255, 0.8), #8a2be2, rgba(0, 136, 255, 0.8));
+  z-index: -1;
+}
+
+.hero-uiverse-btn-v2:hover:after {
+  right: 0;
+}
+
+.hero-uiverse-btn-v2:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-uiverse-btn-v2:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* Social Wrapper Uiverse V2 */
+.social-wrapper-v2 {
+  display: inline-flex;
+  list-style: none;
+  width: 100%;
+  padding-top: 10px;
+  font-family: inherit;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.social-wrapper-v2.center {
+  justify-content: center;
+}
+
+.social-wrapper-v2 .icon {
+  position: relative;
+  background: #fff;
+  z-index: 0;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  color: #333;
+}
+
+.social-wrapper-v2 .icon::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+  z-index: -1;
+  border-radius: 50%;
+  top: 100%;
+}
+.social-wrapper-v2 .icon:hover:after {
+  animation: bg-pos 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) 1 both;
+  animation-timing-function: ease-in-out;
+}
+
+.social-wrapper-v2 .icon:hover {
+  color: #fff;
+  overflow: unset;
+  transition: color 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: overflow-toggle 0.7s;
+}
+
+.social-wrapper-v2 .tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  background: #fff;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  white-space: nowrap;
+}
+
+.social-wrapper-v2 .tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #fff;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-wrapper-v2 .icon:hover .tooltip {
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.social-wrapper-v2 .icon:hover span,
+.social-wrapper-v2 .icon:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Specific colors */
+.social-wrapper-v2 .facebook::after { background-color: #1877f2; }
+.social-wrapper-v2 .twitter::after { background-color: #1da1f2; }
+.social-wrapper-v2 .instagram::after { background-color: #e4405f; }
+.social-wrapper-v2 .whatsapp::after { background-color: #25D366; }
+.social-wrapper-v2 .tiktok::after { background-color: #000000; }
+.social-wrapper-v2 .linkedin::after { background-color: #0A66C2; }
+.social-wrapper-v2 .youtube::after { background-color: #FF0000; }
+
+.social-wrapper-v2 .facebook:hover .tooltip, .social-wrapper-v2 .facebook:hover .tooltip::before { background: #1877f2; color: #fff; }
+.social-wrapper-v2 .twitter:hover .tooltip, .social-wrapper-v2 .twitter:hover .tooltip::before { background: #1da1f2; color: #fff; }
+.social-wrapper-v2 .instagram:hover .tooltip, .social-wrapper-v2 .instagram:hover .tooltip::before { background: #e4405f; color: #fff; }
+.social-wrapper-v2 .whatsapp:hover .tooltip, .social-wrapper-v2 .whatsapp:hover .tooltip::before { background: #25D366; color: #fff; }
+.social-wrapper-v2 .tiktok:hover .tooltip, .social-wrapper-v2 .tiktok:hover .tooltip::before { background: #000000; color: #fff; }
+.social-wrapper-v2 .linkedin:hover .tooltip, .social-wrapper-v2 .linkedin:hover .tooltip::before { background: #0A66C2; color: #fff; }
+.social-wrapper-v2 .youtube:hover .tooltip, .social-wrapper-v2 .youtube:hover .tooltip::before { background: #FF0000; color: #fff; }
+
+@keyframes bg-pos {
+  0% { top: 100%; }
+  100% { top: 0; }
+}
+
+@keyframes overflow-toggle {
+  0% { overflow: hidden; }
+  100% { overflow: visible; }
+}

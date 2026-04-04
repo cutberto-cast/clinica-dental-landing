@@ -22,19 +22,20 @@ export default function Hero() {
                 <div className="absolute right-0 bottom-0 w-[35%] h-[45%] bg-purple-100/60 rounded-full blur-3xl opacity-70" />
             </div>
 
-            <div className="hidden lg:block absolute bottom-0 right-0 z-10 pointer-events-none">
-                <FadeIn delay={0.3} direction="left">
-                    <img
-                        src="/avatar2.png"
-                        alt="Dental 3D Illustration"
+            <div className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-0 w-[55%] h-[80%] z-10 pointer-events-none items-center justify-end">
+                <FadeIn delay={0.3} direction="left" className="w-full h-full flex justify-center lg:justify-end">
+                    <video
+                        src="/videos/hero-dental-video.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{
+                            maskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)",
+                            WebkitMaskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)"
+                        }}
                         className="
-                            block object-contain drop-shadow-2xl animate-float
-                            w-[55vw] translate-x-[2vw]
-                            sm:w-[50vw] sm:translate-x-0
-                            md:w-[44vw]
-                            lg:w-[48vw]
-                            [@media(max-height:960px)]:max-w-[400px]
-                            [@media(min-height:960px)]:max-w-[600px]
+                            block w-auto h-full max-w-full animate-float mix-blend-darken
                         "
                     />
                 </FadeIn>
@@ -47,7 +48,7 @@ export default function Hero() {
             ">
                 <div className="
                     w-full
-                    flex flex-col items-center text-center
+                    flex flex-col text-center
                     max-w-full
                     lg:block lg:text-left lg:items-start
                     lg:max-w-[50%]
@@ -56,6 +57,7 @@ export default function Hero() {
 
                     <FadeIn delay={0.2} direction="up">
                         <h1 className="
+                            pt-[40px]
                             font-bold text-slate-800 leading-[1.1] tracking-tight font-sans
                             text-4xl sm:text-5xl
                             lg:text-[clamp(1.6rem,4.5vw,4.5rem)]
@@ -69,6 +71,7 @@ export default function Hero() {
 
                     <FadeIn delay={0.3} direction="up">
                         <p className="
+                          pb-[60px] pt-[20px]
                             text-slate-500 leading-relaxed font-medium
                             text-sm sm:text-[0.95rem]
                             lg:text-[clamp(0.78rem,1.3vw,1.125rem)]
@@ -81,7 +84,7 @@ export default function Hero() {
 
                     <FadeIn delay={0.4} direction="up">
                         <div className="
-                            flex flex-wrap gap-2.5
+                            flex flex-wrap items-center gap-4 lg:gap-6
                             justify-center
                             lg:justify-start
                             mb-4 lg:mb-7
@@ -90,9 +93,8 @@ export default function Hero() {
                             <button
                                 onClick={openModal}
                                 className="
-                                    bg-[#6366f1] hover:bg-[#4f46e5] text-white font-bold rounded-lg
-                                    transition-all shadow-lg shadow-indigo-500/30
-                                    hover:shadow-indigo-500/40 active:scale-95
+                                    hero-uiverse-btn-v2
+                                    shadow-lg shadow-indigo-500/30
                                     px-5 py-2.5 text-sm
                                     sm:px-7 sm:py-3 sm:text-base
                                     lg:px-8 lg:py-3.5 lg:text-lg
@@ -100,6 +102,32 @@ export default function Hero() {
                             >
                                 Agenda una cita
                             </button>
+
+                            <div className="social-wrapper-v2 !w-auto !pt-0 !justify-start lg:ml-2">
+                                {socialLinks.map((social) => {
+                                    let socialClass = social.name.toLowerCase();
+                                    return (
+                                        <a
+                                            key={social.name}
+                                            href={social.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={social.name}
+                                            className={`icon ${socialClass}`}
+                                        >
+                                            <span className="tooltip">{social.name}</span>
+                                            <svg
+                                                className="w-5 h-5 lg:w-6 lg:h-6 fill-current"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                {social.icon}
+                                            </svg>
+                                        </a>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </FadeIn>
 
@@ -115,42 +143,24 @@ export default function Hero() {
                         </div>
                     </FadeIn>
 
-                    <FadeIn delay={0.6} direction="up">
-                        <div className="
-                            flex items-center gap-4 lg:gap-6
-                            justify-center
-                            lg:justify-start
-                        ">
-                            {socialLinks.map((social) => (
-                                <a
-                                    key={social.name}
-                                    href={social.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={social.name}
-                                    className={`transition-all duration-300 text-slate-400 ${social.color} hover:scale-110`}
-                                >
-                                    <svg
-                                        className="w-5 h-5 lg:w-6 lg:h-6 fill-current"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        {social.icon}
-                                    </svg>
-                                </a>
-                            ))}
-                        </div>
-                    </FadeIn>
+
 
                 </div>
             </div>
 
-            <div className="block lg:hidden relative z-10 w-full mt-auto pointer-events-none">
-                <FadeIn delay={0.3} direction="up">
-                    <img
-                        src="/avatar4.png"
-                        alt="Dental 3D Illustration Mobile"
-                        className="w-full object-cover object-bottom"
+            <div className="lg:hidden relative z-10 w-full mt-auto h-[50vh] pointer-events-none flex justify-center items-center">
+                <FadeIn delay={0.3} direction="up" className="w-full h-full">
+                    <video
+                        src="/videos/hero-dental-video.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{
+                            maskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)",
+                            WebkitMaskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)"
+                        }}
+                        className="w-auto h-full max-w-full mix-blend-darken"
                     />
                 </FadeIn>
             </div>
