@@ -7,7 +7,6 @@ export const metadata = { title: "Agenda | Admin" };
 export default async function AdminPage() {
   const supabase = await createClient();
 
-  // Citas de hoy y los próximos 7 días
   const from = new Date();
   from.setHours(0, 0, 0, 0);
   const to = new Date(from);

@@ -14,7 +14,6 @@ export default async function DisponibilidadPage() {
     .select("*")
     .order("day_of_week", { ascending: true });
 
-  // Asegurar que los 7 días existan (aunque estén inactivos)
   const fullRules: AvailabilityRule[] = Array.from({ length: 7 }, (_, dow) => {
     const existing = (rules ?? []).find((r: AvailabilityRule) => r.day_of_week === dow);
     return existing ?? {
