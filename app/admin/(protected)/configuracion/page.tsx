@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import CalendarConfig from "@/components/admin/CalendarConfig";
+import ChangePasswordForm from "@/components/admin/ChangePasswordForm";
 
 export const metadata = { title: "Configuración | Admin" };
 
@@ -25,6 +26,7 @@ export default async function ConfiguracionPage() {
       </div>
       <div className="space-y-6">
         <CalendarConfig isConnected={isConnected} expiresAt={expiresAt} />
+        <ChangePasswordForm />
       </div>
     </div>
   );
