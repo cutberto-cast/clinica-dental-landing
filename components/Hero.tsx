@@ -78,7 +78,7 @@ export default function Hero() {
                             mb-4 lg:mb-5
                             [@media(max-height:800px)]:mb-2
                         ">
-                            Más que un tratamiento, ofrecemos confianza. Atención personalizada, procesos cuidadosos y soluciones modernas pensadas para tu salud dental.
+                            Más que un tratamiento, ofrecemos confianza. Atención personalizada, procesos cuidadosos y soluciones modernas pensadas para tu salud dental
                         </p>
                     </FadeIn>
 
