@@ -65,7 +65,7 @@ export default function Hero() {
                             [@media(max-height:800px)]:mb-2
                         ">
                             Haz de tu sonrisa  <br />
-                            <span className="text-[#6366f1]">tu mejor firma.</span>
+                            <span className="text-[#6366f1]">tu mejor firma</span>
                         </h1>
                     </FadeIn>
 
