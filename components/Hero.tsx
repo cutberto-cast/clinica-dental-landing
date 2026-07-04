@@ -71,7 +71,7 @@ export default function Hero() {
 
                     <FadeIn delay={0.3} direction="up">
                         <p className="
-                          pb-[60px] pt-[20px]
+                          pb-2 lg:pb-[60px] pt-[20px]
                             text-slate-500 leading-relaxed font-medium
                             text-sm sm:text-[0.95rem]
                             lg:text-[clamp(0.78rem,1.3vw,1.125rem)]
@@ -81,6 +81,23 @@ export default function Hero() {
                             Más que un tratamiento, ofrecemos confianza. Atención personalizada, procesos cuidadosos y soluciones modernas pensadas para tu salud dental.
                         </p>
                     </FadeIn>
+
+                    <div className="lg:hidden relative w-full h-[30vh] min-h-[180px] mb-6 pointer-events-none flex justify-center items-center">
+                        <FadeIn delay={0.35} direction="up" className="w-full h-full">
+                            <video
+                                src="/videos/hero-dental-video.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                style={{
+                                    maskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)",
+                                    WebkitMaskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)"
+                                }}
+                                className="w-auto h-full max-w-full mix-blend-darken mx-auto"
+                            />
+                        </FadeIn>
+                    </div>
 
                     <FadeIn delay={0.4} direction="up">
                         <div className="
@@ -146,23 +163,6 @@ export default function Hero() {
 
 
                 </div>
-            </div>
-
-            <div className="lg:hidden relative z-10 w-full mt-auto h-[50vh] pointer-events-none flex justify-center items-center">
-                <FadeIn delay={0.3} direction="up" className="w-full h-full">
-                    <video
-                        src="/videos/hero-dental-video.mp4"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        style={{
-                            maskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)",
-                            WebkitMaskImage: "radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)"
-                        }}
-                        className="w-auto h-full max-w-full mix-blend-darken"
-                    />
-                </FadeIn>
             </div>
 
         </section>
